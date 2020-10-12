@@ -5,38 +5,58 @@ using UnityEngine.EventSystems;
 
 public class MousePositionChecker : MonoBehaviour
 {
-    public PlayerManager playerManager;
-    public Queue<Vector3> mousePositionQueue = new Queue<Vector3>();
-
+    [SerializeField]
+    private PlayerManager _playerManager;
+    private Queue<Vector3> _mousePositionQueue;
     private Vector3 _distanceToMousePosition;
+    private Plane _plane;
+
+    public Queue<Vector3> MousePositionQueue
+    {
+        get { return _mousePositionQueue; }
+    }
 
     public Vector3 DistanceMousePosition
     {
         get { return _distanceToMousePosition; }
     }
-   
+
+    public Plane Plane
+    {
+        get { return _plane; }
+    }
+
+    private void Start()
+    {
+        _mousePositionQueue = new Queue<Vector3>();
+        _plane = new Plane(Vector3.up, _playerManager.PlayerTransform.position);
+    }
+
     void Update()
+    {
+        MousePositionFinder();
+    }
+
+    private void MousePositionFinder()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Plane Plane = new Plane(Vector3.up, playerManager.PlayerTransform.position);
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            float dis = 0.0f;
+            float enterDistantion = 0.0f;
 
-            if (Plane.Raycast(ray, out dis))
+            if (_plane.Raycast(ray, out enterDistantion))
             {
-                if (!IsBuuton())
+                if (!CheckIfRaycastHasCollisionWithUI())
                 {
-                    _distanceToMousePosition = ray.GetPoint(dis);
-                    mousePositionQueue.Enqueue(_distanceToMousePosition);
+                    _distanceToMousePosition = ray.GetPoint(enterDistantion);
+                    _mousePositionQueue.Enqueue(_distanceToMousePosition);
                 }
 
             }
-
         }
     }
 
-    public bool IsBuuton()
+    public bool CheckIfRaycastHasCollisionWithUI()
     {
         PointerEventData pointerEventData = new PointerEventData(EventSystem.current);
         pointerEventData.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);

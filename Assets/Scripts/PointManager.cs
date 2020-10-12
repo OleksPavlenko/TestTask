@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,15 +6,16 @@ using UnityEngine.EventSystems;
 
 public class PointManager : MonoBehaviour
 {
-    public PlayerManager playerManager;
-    public MousePositionChecker mousePositionChecker;
-    public Queue<Vector3> pointsPosition = new Queue<Vector3>();
-    public Queue<GameObject> points = new Queue<GameObject>();
-
-    private bool _pointIsDestroyed;
+    [SerializeField]
+    private PlayerManager _playerManager;
+    [SerializeField]
+    private MousePositionChecker _mousePositionChecker;
+    private Boolean _pointIsDestroyed;
     private GameObject _pointPrefab;
     private GameObject _point;
     private Vector3 _distanceToMousePosition;
+    private Queue<Vector3> _pointsPosition;
+    private Queue<GameObject> _points;
 
     public bool PointIsDestroyed
     {
@@ -29,6 +31,8 @@ public class PointManager : MonoBehaviour
     {
         _pointPrefab = Resources.Load<GameObject>("Point");
         _pointIsDestroyed = true;
+        _pointsPosition = new Queue<Vector3>();
+        _points = new Queue<GameObject>();
     }
 
     void Update()
@@ -42,27 +46,26 @@ public class PointManager : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            Plane Plane = new Plane(Vector3.up, playerManager.PlayerTransform.position);
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            float dis = 0.0f;
+            float enterDistantion = 0.0f;
            
-            if (Plane.Raycast(ray, out dis))
+            if (_mousePositionChecker.Plane.Raycast(ray, out enterDistantion))
             {
-                if (!mousePositionChecker.IsBuuton())
+                if (!_mousePositionChecker.CheckIfRaycastHasCollisionWithUI())
                 {
-                    _distanceToMousePosition = ray.GetPoint(dis);
-                    pointsPosition.Enqueue(_distanceToMousePosition);
+                    _distanceToMousePosition = ray.GetPoint(enterDistantion);
+                    _pointsPosition.Enqueue(_distanceToMousePosition);
                     _point = Instantiate(_pointPrefab, _distanceToMousePosition, Quaternion.identity);
-                    points.Enqueue(_point);
+                    _points.Enqueue(_point);
                 }
             }
         }
 
-        if (pointsPosition.Count > 0 && playerManager.PlayerTransform.position == pointsPosition.Peek())
+        if (_pointsPosition.Count > 0 && _playerManager.PlayerTransform.position == _pointsPosition.Peek())
         {
-            Destroy(points.Peek());
-            points.Dequeue();
-            pointsPosition.Dequeue();
+            Destroy(_points.Peek());
+            _points.Dequeue();
+            _pointsPosition.Dequeue();
         }
     }
 }

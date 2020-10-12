@@ -337,7 +337,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpeed: 7
-  mousePositionChecker: {fileID: 963194229}
+  _mousePositionChecker: {fileID: 963194229}
 --- !u!114 &642891959
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -350,10 +350,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2426ab9e0c730c04f8e4e57e786801ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lineRenderer: {fileID: 642891960}
-  playerManager: {fileID: 642891958}
-  pointManager: {fileID: 705507997}
-  mousePositionChecker: {fileID: 963194229}
+  _playerManager: {fileID: 642891958}
+  _pointManager: {fileID: 705507997}
+  _mousePositionChecker: {fileID: 963194229}
 --- !u!120 &642891960
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -648,8 +647,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bd2e42f6903dee47bf78a562472ad9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerManager: {fileID: 642891958}
-  mousePositionChecker: {fileID: 963194229}
+  _playerManager: {fileID: 642891958}
+  _mousePositionChecker: {fileID: 963194229}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -746,7 +745,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: faf0a278607357546a85c3f455b3a533, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerManager: {fileID: 642891958}
+  _playerManager: {fileID: 642891958}
 --- !u!1 &2068721495
 GameObject:
   m_ObjectHideFlags: 0

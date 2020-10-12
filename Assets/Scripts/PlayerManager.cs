@@ -8,8 +8,13 @@ public class PlayerManager : MonoBehaviour
     private Transform _playerTransform;
     [SerializeField]
     private float _moveSpeed;
+    [SerializeField]
+    private MousePositionChecker _mousePositionChecker;
 
-    public MousePositionChecker mousePositionChecker;
+    public MousePositionChecker MousePositionChecker
+    {
+        get { return _mousePositionChecker; }
+    }
 
     public Transform PlayerTransform
     {
@@ -28,14 +33,20 @@ public class PlayerManager : MonoBehaviour
 
     private void MovePlayer()
     {
-        if (mousePositionChecker.mousePositionQueue.Count > 0 && _playerTransform.position != mousePositionChecker.DistanceMousePosition)
+        if (_mousePositionChecker.MousePositionQueue.Count > 0)
         {
-            _playerTransform.position = Vector3.MoveTowards(_playerTransform.position, mousePositionChecker.mousePositionQueue.Peek(), _moveSpeed * Time.deltaTime);
-        }
-       
-        if (mousePositionChecker.mousePositionQueue.Count > 0 && _playerTransform.position == mousePositionChecker.mousePositionQueue.Peek())
-        {
-            mousePositionChecker.mousePositionQueue.Dequeue();
+            bool isPlayerPositionEqualMousePosition = _playerTransform.position == _mousePositionChecker.DistanceMousePosition;
+            bool isPlayerPositionEqualMouseQueueFirstElement = _playerTransform.position == _mousePositionChecker.MousePositionQueue.Peek();
+
+            if (!isPlayerPositionEqualMousePosition)
+            {
+                _playerTransform.position = Vector3.MoveTowards(_playerTransform.position, _mousePositionChecker.MousePositionQueue.Peek(), _moveSpeed * Time.deltaTime);
+            }
+
+            if (isPlayerPositionEqualMouseQueueFirstElement)
+            {
+                _mousePositionChecker.MousePositionQueue.Dequeue();
+            }
         }
     }
 }
