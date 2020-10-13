@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class LineWayManager : MonoBehaviour
@@ -19,15 +21,27 @@ public class LineWayManager : MonoBehaviour
 
     void Update()
     {
-        _lineRenderer.SetPosition(0, new Vector3(_playerManager.PlayerTransform.position.x, 0, _playerManager.PlayerTransform.position.z));
+        CreateWayToLineRenderer();
+    }
 
-        if (!_pointManager.PointIsDestroyed && _playerManager.MousePositionChecker.MousePositionQueue.Count > 0)
-        {
-            _lineRenderer.SetPosition(1, new Vector3(_mousePositionChecker.MousePositionQueue.Peek().x, 0, _mousePositionChecker.MousePositionQueue.Peek().z));
+    private void CreateWayToLineRenderer()
+    {
+        Vector3 lineRendererFirstPosition = new Vector3(_playerManager.PlayerTransform.position.x, 0, _playerManager.PlayerTransform.position.z);
+        Vector3[] mousePositionArray = _mousePositionChecker.MousePositionQueue.ToArray();
+        _lineRenderer.SetPosition(0, lineRendererFirstPosition);
+
+        if (!_pointManager.PointIsDestroyed && mousePositionArray.Length > 0)
+        {           
+            for (int mousePositionIndex = 0; mousePositionIndex < mousePositionArray.Length; mousePositionIndex++)
+            {
+                int lineRendererPositionIndex = mousePositionIndex + 1;
+                _lineRenderer.positionCount = mousePositionArray.Length + 1;
+                _lineRenderer.SetPosition(lineRendererPositionIndex, new Vector3(mousePositionArray[mousePositionIndex].x, 0, mousePositionArray[mousePositionIndex].z));
+            }
         }
         else
         {
-            _lineRenderer.SetPosition(1, new Vector3(_playerManager.PlayerTransform.position.x, 0, _playerManager.PlayerTransform.position.z));
+            _lineRenderer.SetPosition(1, lineRendererFirstPosition);
         }
     }
 }
